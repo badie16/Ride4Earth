@@ -44,7 +44,7 @@ const LoginScreen = () => {
 						{/* Form */}
 						<View style={styles.formContainer}>
 							<Text style={styles.welcomeText}>Welcome back!</Text>
-							<Text style={styles.subtitle}>Please sign in to continue</Text>
+							<Text style={styles.subtitle}>Please sign in to continue </Text>
 
 							<View style={styles.inputContainer}>
 								<Text style={styles.label}>Email or Phone Number</Text>
