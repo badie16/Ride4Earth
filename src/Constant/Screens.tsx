@@ -16,4 +16,5 @@ export const Screens = {
 	Welcom: "welcome",
 	Index: "index",
 	Home: "home",
+	notFound: "+not-found",
 };
