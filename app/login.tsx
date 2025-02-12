@@ -22,13 +22,39 @@ import CustomInput from "@/src/components/CustomInput";
 import { Screens } from "@/src/Constant/Screens";
 import CustomUseNaviaction from "@/src/components/CustomUseNaviaction";
 import { globalStyles } from "@/assets/css/global";
-
+import { showAlert } from "@/src/utlis/alert";
+import axios from "axios";
+import { API_BASE_URL } from "@/src/Constant/Api";
 const LoginScreen = () => {
 	const navigation = CustomUseNaviaction();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
-
+	const [isLoading, setIsLoading] = useState(false);
+	const handleLogin = async () => {
+		if (email == "" || password == "") {
+			showAlert({ title: "Error", message: "Please fill all the fields " });
+			return;
+		}
+		try {
+			setIsLoading(true);
+			// Envoie les informations au backend pour vérifier la connexion
+			const response = await axios.post(`${API_BASE_URL}/login`, {
+				email,
+				password,
+			});
+			// Si la connexion est réussie, rediriger l'utilisateur
+			if (response.data.success) {
+				navigation.navigate(Screens.Home); // Redirige vers la page d'accueil
+			} else {
+				showAlert({ title: "Error", message: response.data.message });
+			}
+		} catch (err) {
+			showAlert({ title: "Error", message: "Invalid email or password" });
+		} finally {
+			setIsLoading(false);
+		}
+	};
 	return (
 		<SafeAreaView style={globalStyles.container}>
 			<KeyboardAvoidingView
@@ -97,8 +123,10 @@ const LoginScreen = () => {
 							</TouchableOpacity>
 							<CustomButton
 								title="Log In"
-								onPress={() => console.log("Connexion...")}
+								onPress={handleLogin}
+								disabled={isLoading}
 								bgColor={Colors.primary}
+								isLoading={isLoading}
 							/>
 							{/* Séparateur */}
 							<View style={styles.dividerContainer}>

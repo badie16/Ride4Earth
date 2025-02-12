@@ -24,11 +24,11 @@ import CustomTitle from "@/src/components/CustomTitle";
 import { showAlert } from "@/src/utlis/alert";
 import { Screens } from "@/src/Constant/Screens";
 import { globalStyles } from "@/assets/css/global";
-
+import { register } from "@/src/services/auth";
 const RegisterScreen = () => {
 	const navigation = CustomUseNaviaction();
 	const route = useRoute();
-	const { userType, profileImage: initialProfileImage } = route.params;
+	const { userType } = route.params;
 
 	const [formData, setFormData] = useState({
 		firstName: "",
@@ -39,7 +39,8 @@ const RegisterScreen = () => {
 		password: "",
 		gender: "male",
 		address: "",
-		profileImage: initialProfileImage,
+		profileImage: "",
+		role: userType,
 	});
 
 	const [showPassword, setShowPassword] = useState(false);
@@ -67,7 +68,7 @@ const RegisterScreen = () => {
 
 	const pickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			mediaTypes: ["images"],
 			allowsEditing: true,
 			aspect: [1, 1],
 			quality: 1,
@@ -79,9 +80,6 @@ const RegisterScreen = () => {
 	};
 
 	const handleRegister = async () => {
-		navigation.navigate(Screens.Register.DriverRegister.DriverDocuments, {
-			formData,
-		});
 		// Validation
 		if (Object.values(formData).some((value) => !value)) {
 			showAlert({
@@ -114,6 +112,10 @@ const RegisterScreen = () => {
 					formData,
 				});
 			} else {
+				const response = await register({
+					...formData,
+				});
+				console.log("Inscription réussie:", response);
 				navigation.navigate("Home");
 			}
 		} catch (error) {
@@ -125,13 +127,6 @@ const RegisterScreen = () => {
 			setIsLoading(false);
 		}
 	};
-	const [ageRange, setAgeRange] = useState(null);
-	let ageRanges;
-	if (userType === "driver") {
-		ageRanges = ["20-29", "30-39", "40-49", "50-XX"];
-	} else {
-		ageRanges = ["15-19", "20-29", "30-39", "40-XX"];
-	}
 	return (
 		<SafeAreaView style={globalStyles.container}>
 			<HeaderBack title="Create Account"></HeaderBack>

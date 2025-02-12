@@ -95,9 +95,10 @@ Ride4Earth/
 │   ├── services/            # API avec Axios
 │   ├── context/             # Gestion globale de l’état
 │── backend/                 # API Node.js + Express
-│   ├── models/              # Modèles MySQL
+│   ├── controllers/         # logique métier  (login, register, profil).
 │   ├── routes/              # Routes API
 │   ├── server.js            # Serveur Express
+│   ├── middleware/	         # Gère l’authentification et la validation.
 │── .env                     # Variables d’environnement
 │── package.json             # Dépendances
 ```
