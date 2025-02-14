@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(cors()); // Activer CORS pour autoriser les requêtes du frontend
 
-app.use("/api/auth", authRoutes);
+app.use("/", authRoutes);
 
 // Route test pour vérifier la connexion Supabase
 app.get("/test-db", async (req, res) => {
