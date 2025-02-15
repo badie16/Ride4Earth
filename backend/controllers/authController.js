@@ -6,7 +6,7 @@ export const register = async (req, res) => {
 		email,
 		password,
 		firstName,
-		lastNname,
+		lastName,
 		profileImage,
 		phone,
 		gender,
@@ -18,7 +18,7 @@ export const register = async (req, res) => {
 	// 🔹 Créer un utilisateur avec Supabase Auth
 	const { data, error } = await supabase.auth.signUp({ email, password });
 
-	if (error) return res.status(400).json({ error: error.message });
+	if (error) return res.status(200).json({ error: error.message });
 
 	const userId = data.user.id; // ID généré par Supabase Auth
 
@@ -32,14 +32,14 @@ export const register = async (req, res) => {
 			birth_date: birthDate,
 			password,
 			first_name: firstName,
-			last_name: lastNname,
+			last_name: lastName,
 			profile_picture: profileImage,
 			role,
 			address,
 		},
 	]);
 
-	if (insertError) return res.status(400).json({ error: insertError.message });
+	if (insertError) return res.status(200).json({ error: insertError.message });
 
 	res.status(201).json({ message: "User registered successfully", userId });
 };
@@ -53,7 +53,7 @@ export const login = async (req, res) => {
 		email,
 		password,
 	});
-	if (error) return res.status(400).json({ error: error.message });
+	if (error) return res.status(201).json({ error: "Invalid email or password" });
 	const userId = data.user.id; // ID de l'utilisateur connecté
 
 	// 🔹 Récupérer les infos du user dans la table `users`
@@ -62,8 +62,10 @@ export const login = async (req, res) => {
 		.select("*")
 		.eq("id", userId)
 		.single();
+	if (userError)
+		return res.status(201).json({ error: "Invalid email or password" });
 
-	if (userError) return res.status(400).json({ error: userError.message });
-
-	res.status(200).json({ user, token: data.session.access_token });
+	res
+		.status(200)
+		.json({ user, token: data.session.access_token, success: true });
 };

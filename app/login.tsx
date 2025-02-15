@@ -42,12 +42,12 @@ const LoginScreen = () => {
 			const response = await axios.post(`${API_BASE_URL}/login`, {
 				email,
 				password,
-			});
+			});			
 			// Si la connexion est réussie, rediriger l'utilisateur
 			if (response.data.success) {
 				navigation.navigate(Screens.Home); // Redirige vers la page d'accueil
 			} else {
-				showAlert({ title: "Error", message: response.data.message });
+				showAlert({ title: "Error", message: response.data.error });
 			}
 		} catch (err) {
 			showAlert({ title: "Error", message: "Invalid email or password" });

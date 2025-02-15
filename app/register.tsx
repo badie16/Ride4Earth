@@ -25,6 +25,8 @@ import { showAlert } from "@/src/utlis/alert";
 import { Screens } from "@/src/Constant/Screens";
 import { globalStyles } from "@/assets/css/global";
 import { register } from "@/src/services/auth";
+import { API_BASE_URL } from "@/src/Constant/Api";
+import axios from "axios";
 const RegisterScreen = () => {
 	const navigation = CustomUseNaviaction();
 	const route = useRoute();
@@ -105,23 +107,27 @@ const RegisterScreen = () => {
 		}
 		setIsLoading(true);
 		try {
-			// Simulate API call
-			await new Promise((resolve) => setTimeout(resolve, 1500));
-			if (userType === "driver") {
-				navigation.navigate(Screens.Register.DriverRegister.DriverDocuments, {
-					formData,
-				});
+			console.log(formData)
+			
+			const response = await axios.post(`${API_BASE_URL}/register`, formData);
+			console.log(response);
+			if (response.data.user) {
+				if (userType === "driver") {
+					navigation.navigate(Screens.Register.DriverRegister.DriverDocuments, {
+						formData: response.data.user,
+					});
+				} else {
+					// Store the user data and token in your app's state or storage
+					// For example, you could use AsyncStorage or a state management library
+					navigation.navigate(Screens.Home);
+				}
 			} else {
-				const response = await register({
-					...formData,
-				});
-				console.log("Inscription réussie:", response);
-				navigation.navigate("Home");
+				throw new Error("Registration failed");
 			}
 		} catch (error) {
 			showAlert({
 				title: "Error",
-				message: "Registration failed",
+				message: "Registration failed. Please try again.",
 			});
 		} finally {
 			setIsLoading(false);
